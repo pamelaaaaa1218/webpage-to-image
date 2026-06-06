@@ -1,0 +1,13 @@
+# Dependencies (reinstall with `npm install` — uses your system Chrome, no browser download)
+node_modules/
+
+# OS / editor cruft
+.DS_Store
+*.log
+npm-debug.log*
+
+# Local render outputs
+*.png
+*.jpg
+*.jpeg
+!docs/**/*.png
