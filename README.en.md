@@ -55,5 +55,8 @@ node render.js \
 - `render.js` — render script (puppeteer-core)
 - `package.json` — dependency manifest
 
+## 📜 License
+MIT — see [LICENSE](./LICENSE).
+
 ---
 🤖 Built with [Claude Code](https://claude.com/claude-code)

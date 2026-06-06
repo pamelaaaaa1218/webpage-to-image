@@ -3,6 +3,29 @@
   "version": "1.0.0",
   "private": true,
   "description": "Render a local HTML file or URL to a full-page high-resolution image via system Chrome.",
+  "license": "MIT",
+  "author": "Pamela",
+  "homepage": "https://github.com/pamelaaaaa1218/webpage-to-image#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pamelaaaaa1218/webpage-to-image.git"
+  },
+  "keywords": [
+    "claude-code",
+    "claude-skill",
+    "html-to-image",
+    "screenshot",
+    "full-page-screenshot",
+    "puppeteer",
+    "headless-chrome",
+    "webpage-screenshot"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "render": "node render.js"
+  },
   "dependencies": {
     "puppeteer-core": "^23.11.1"
   }

@@ -55,5 +55,8 @@ node render.js \
 - `render.js` — 渲染脚本(基于 puppeteer-core)
 - `package.json` — 依赖声明
 
+## 📜 许可证
+MIT — 详见 [LICENSE](./LICENSE)。
+
 ---
 🤖 由 [Claude Code](https://claude.com/claude-code) 协助创建
