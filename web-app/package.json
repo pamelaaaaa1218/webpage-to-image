@@ -1,0 +1,17 @@
+{
+  "name": "webshot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本地网页转高清整页长图工具:粘贴链接→出图,复用本机 Chrome 渲染(与 webpage-to-image skill 同一引擎,清晰度一致)。",
+  "license": "MIT",
+  "author": "Pamela",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}

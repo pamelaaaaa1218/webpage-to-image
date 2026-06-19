@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网页转高清长图 · webshot</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --ink:#eef1f6; --ink-soft:#aab2c0; --ink-mute:#6f7888;
+    --brand:#4f8cff; --brand2:#7c5cff; --ok:#33c98a; --warn:#f0a73f; --err:#ff6b6b;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Segoe UI,sans-serif;
+    background:radial-gradient(1100px 500px at 15% -10%,rgba(79,140,255,.16),transparent 60%),
+               radial-gradient(900px 460px at 95% 0,rgba(124,92,255,.14),transparent 55%),var(--bg);
+    color:var(--ink); min-height:100vh; line-height:1.6; padding:32px 18px 60px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+  header{margin-bottom:22px}
+  .title{font-size:28px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:10px}
+  .title .grad{background:linear-gradient(120deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--ink-soft);font-size:14.5px;margin-top:6px}
+  .status{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;font-weight:600;
+    padding:6px 13px;border-radius:999px;border:1px solid var(--line);background:var(--panel)}
+  .status .dot{width:8px;height:8px;border-radius:50%;background:var(--ink-mute)}
+  .status.on .dot{background:var(--ok);box-shadow:0 0 0 4px rgba(51,201,138,.18)}
+  .status.off .dot{background:var(--warn);box-shadow:0 0 0 4px rgba(240,167,63,.18)}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+  label.fld{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin:0 0 8px}
+  .urlrow{display:flex;gap:10px}
+  input[type=url],input[type=number]{
+    width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+    border-radius:10px;padding:12px 14px;font-size:15px;outline:none;transition:border-color .15s}
+  input:focus{border-color:var(--brand)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  .seg{display:flex;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:4px;gap:4px}
+  .seg button{flex:1;border:0;background:transparent;color:var(--ink-soft);font-size:14px;font-weight:600;
+    padding:9px 6px;border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .seg button.active{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff}
+  .seg button:hover:not(.active){color:var(--ink)}
+  .customw{margin-top:10px;display:none}
+  .customw.show{display:block}
+  .qualw{margin-top:12px;display:none}
+  .qualw.show{display:block}
+  .qualw input[type=range]{width:100%;accent-color:var(--brand)}
+  .qval{font-variant-numeric:tabular-nums;color:var(--ink)}
+
+  .actions{display:flex;gap:12px;margin-top:4px}
+  .btn{flex:1;border:0;border-radius:11px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;transition:transform .12s,opacity .15s,box-shadow .15s}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 8px 22px rgba(79,140,255,.28)}
+  .btn-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--brand)}
+
+  .hint{font-size:12.5px;color:var(--ink-mute);margin-top:10px}
+  .hint code{background:var(--panel2);padding:1px 6px;border-radius:5px;color:var(--ink-soft)}
+
+  .result{display:none;margin-top:4px}
+  .result.show{display:block}
+  .res-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .res-meta{font-size:13px;color:var(--ink-soft)}
+  .res-meta b{color:var(--ink)}
+  .dl{margin-left:auto;text-decoration:none;background:var(--ok);color:#04150d;font-weight:700;font-size:14px;padding:9px 16px;border-radius:9px}
+  .preview{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;max-height:520px;overflow-y:auto}
+  .preview img{display:block;width:100%}
+  .spin{display:none;align-items:center;gap:12px;color:var(--ink-soft);font-size:14px;margin-top:6px}
+  .spin.show{display:flex}
+  .loader{width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .err{display:none;margin-top:12px;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.35);color:#ffb4b4;border-radius:10px;padding:12px 14px;font-size:14px}
+  .err.show{display:block}
+
+  .cmd-card label.fld{margin-bottom:10px}
+  textarea{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink-soft);
+    border-radius:10px;padding:13px 14px;font:13px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;
+    resize:vertical;min-height:96px;outline:none}
+  .copybtn{margin-top:10px;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+    border-radius:9px;padding:9px 16px;font-size:14px;font-weight:600;cursor:pointer}
+  .copybtn:hover{border-color:var(--brand)}
+  footer{color:var(--ink-mute);font-size:12.5px;text-align:center;margin-top:26px;line-height:1.9}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}.title{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title">🖼️ <span class="grad">网页转高清长图</span></div>
+    <div class="sub">粘贴任意网页链接,整页渲染成高清图。用本机 Chrome,清晰度满格,任意外部链接都能截。</div>
+    <div id="status" class="status"><span class="dot"></span><span id="statusText">检测本地渲染服务中…</span></div>
+  </header>
+
+  <div class="card">
+    <label class="fld" for="url">网页链接</label>
+    <div class="urlrow">
+      <input id="url" type="url" placeholder="https://example.com" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="grid">
+      <div>
+        <label class="fld">版式</label>
+        <div class="seg" id="segDevice">
+          <button data-w="1440" class="active">电脑版 1440</button>
+          <button data-w="700">手机版 700</button>
+          <button data-w="custom">自定义</button>
+        </div>
+        <div class="customw" id="customW"><input type="number" id="customWidth" value="1280" min="280" max="4000" step="20" placeholder="自定义宽度 px"></div>
+      </div>
+      <div>
+        <label class="fld">清晰度</label>
+        <div class="seg" id="segScale">
+          <button data-s="2" class="active">2x 高清</button>
+          <button data-s="3">3x 超清</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label class="fld">格式</label>
+        <div class="seg" id="segFormat">
+          <button data-f="png" class="active">PNG 无损</button>
+          <button data-f="jpeg">JPG 小体积</button>
+        </div>
+      </div>
+      <div>
+        <div class="qualw" id="qualW">
+          <label class="fld">JPG 画质 · <span class="qval" id="qval">92</span></label>
+          <input type="range" id="quality" min="50" max="100" value="92">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="actions">
+      <button class="btn btn-primary" id="goBtn">🚀 生成图片</button>
+      <button class="btn btn-ghost" id="copyTopBtn">📋 复制指令发给 Claude</button>
+    </div>
+    <div class="spin" id="spin"><span class="loader"></span><span id="spinText">正在用本机 Chrome 渲染整页…首屏会先启动浏览器,稍等几秒</span></div>
+    <div class="err" id="err"></div>
+    <div class="hint" id="modeHint"></div>
+
+    <div class="result" id="result">
+      <div class="res-bar">
+        <span class="res-meta" id="resMeta"></span>
+        <a class="dl" id="dlBtn" download>⬇︎ 下载图片</a>
+      </div>
+      <div class="preview"><img id="previewImg" alt="渲染结果预览"></div>
+    </div>
+  </div>
+
+  <div class="card cmd-card">
+    <label class="fld">📋 指令(发给 Claude,或自己在终端跑)</label>
+    <textarea id="cmdBox" readonly></textarea>
+    <button class="copybtn" id="copyBtn">复制</button>
+  </div>
+
+  <footer>
+    本地服务开着 → 点「生成图片」直接出图 ｜ 没开服务 → 复制上面的指令发给 Claude<br>
+    启动本地服务:在本文件夹运行 <code>npm install</code> 然后 <code>npm start</code>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const API = location.protocol === 'file:' ? 'http://localhost:7654' : '';
+  const $ = id => document.getElementById(id);
+  const state = { w:1440, s:2, f:'png', q:92 };
+  let backendUp = false;
+
+  // segmented controls
+  function wireSeg(segId, fn){
+    const seg = $(segId);
+    seg.addEventListener('click', e => {
+      const b = e.target.closest('button'); if(!b) return;
+      [...seg.children].forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); fn(b); syncCmd();
+    });
+  }
+  wireSeg('segDevice', b => {
+    if(b.dataset.w === 'custom'){ $('customW').classList.add('show'); state.w = parseInt($('customWidth').value||'1280',10); }
+    else { $('customW').classList.remove('show'); state.w = parseInt(b.dataset.w,10); }
+  });
+  wireSeg('segScale', b => state.s = parseFloat(b.dataset.s));
+  wireSeg('segFormat', b => { state.f = b.dataset.f; $('qualW').classList.toggle('show', state.f==='jpeg'); });
+  $('customWidth').addEventListener('input', e => { state.w = parseInt(e.target.value||'1280',10); syncCmd(); });
+  $('quality').addEventListener('input', e => { state.q = parseInt(e.target.value,10); $('qval').textContent = state.q; syncCmd(); });
+  $('url').addEventListener('input', syncCmd);
+
+  function safeName(url){ try{ return new URL(url).hostname.replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'') || 'webshot'; }catch(_){ return 'webshot'; } }
+  function deviceLabel(){ return state.w===700 ? '手机版' : (state.w>=1280 ? '电脑版' : '自定义'); }
+
+  function syncCmd(){
+    const url = $('url').value.trim() || '<粘贴你的链接>';
+    const ext = state.f==='jpeg' ? 'jpg' : 'png';
+    const name = `${safeName(url)}-${state.w}w@${state.s}x.${ext}`;
+    const nl = `帮我把这个网页转成图片:${url}\n（${deviceLabel()}·宽${state.w}·${state.s}x·${state.f.toUpperCase()}${state.f==='jpeg'?('·画质'+state.q):''}）`;
+    const cmd = `node ~/.claude/skills/webpage-to-image/render.js \\\n  --input "${url}" \\\n  --out ~/Downloads/${name} \\\n  --width ${state.w} --scale ${state.s}${state.f==='jpeg'?` --format jpeg --quality ${state.q}`:''}`;
+    $('cmdBox').value = nl + '\n\n— 或自己在终端运行 —\n' + cmd;
+  }
+
+  function copy(text){ navigator.clipboard.writeText(text).then(()=>{},()=>{}); }
+  $('copyBtn').addEventListener('click', ()=>{ copy($('cmdBox').value); $('copyBtn').textContent='已复制 ✓'; setTimeout(()=>$('copyBtn').textContent='复制',1400); });
+  $('copyTopBtn').addEventListener('click', ()=>{ copy($('cmdBox').value); $('copyTopBtn').textContent='已复制 ✓'; setTimeout(()=>$('copyTopBtn').textContent='📋 复制指令发给 Claude',1400); });
+
+  // health check
+  fetch(API + '/health').then(r=>r.json()).then(d=>{
+    backendUp = !!(d && d.ok);
+    setStatus(backendUp);
+  }).catch(()=> setStatus(false));
+
+  function setStatus(up){
+    const s = $('status'), t = $('statusText');
+    if(up){ s.className='status on'; t.textContent='本地渲染服务已连接 · 可一键出图';
+      $('modeHint').innerHTML='✅ 自助模式:点「生成图片」即可直接渲染下载。';
+      $('goBtn').disabled=false;
+    } else { s.className='status off'; t.textContent='离线 · 未连接本地服务';
+      $('modeHint').innerHTML='💡 离线模式:点「复制指令发给 Claude」把请求发给我即可;想本地一键出图,运行 <code>npm start</code> 后刷新本页。';
+      $('goBtn').disabled=true;
+    }
+  }
+
+  // render
+  $('goBtn').addEventListener('click', async ()=>{
+    const url = $('url').value.trim();
+    $('err').classList.remove('show'); $('result').classList.remove('show');
+    if(!/^https?:\/\//i.test(url)){ showErr('请填写 http(s):// 开头的有效网址'); return; }
+    $('spin').classList.add('show'); $('goBtn').disabled=true;
+    try{
+      const qs = new URLSearchParams({ url, width:state.w, scale:state.s, format:state.f, quality:state.q });
+      const r = await fetch(API + '/render?' + qs.toString());
+      if(!r.ok){ const j = await r.json().catch(()=>({})); throw new Error(j.error || ('HTTP '+r.status)); }
+      const blob = await r.blob();
+      const w = r.headers.get('X-Img-Width'), h = r.headers.get('X-Img-Height');
+      const bytes = parseInt(r.headers.get('X-Img-Bytes')||blob.size,10);
+      const objUrl = URL.createObjectURL(blob);
+      $('previewImg').src = objUrl;
+      const ext = state.f==='jpeg'?'jpg':'png';
+      const dl = $('dlBtn'); dl.href = objUrl; dl.download = `${safeName(url)}-${state.w}w@${state.s}x.${ext}`;
+      const mb = (bytes/1048576).toFixed(2);
+      $('resMeta').innerHTML = `<b>${w}×${h}</b> px · <b>${mb}</b> MB · ${state.f.toUpperCase()}` + (mb>10?' · <span style="color:var(--warn)">⚠ 超过公众号 10MB,建议转 JPG 或降到 2x</span>':'');
+      $('result').classList.add('show');
+    }catch(e){ showErr('渲染失败:' + e.message); }
+    finally{ $('spin').classList.remove('show'); $('goBtn').disabled=!backendUp; }
+  });
+
+  function showErr(m){ const el=$('err'); el.textContent=m; el.classList.add('show'); }
+
+  syncCmd();
+})();
+</script>
+</body>
+</html>
