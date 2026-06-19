@@ -55,6 +55,9 @@ node render.js \
 - `render.js` — 渲染脚本(基于 puppeteer-core)
 - `package.json` — 依赖声明
 
+## 🌐 网页版
+偏好用网页操作?见 [`web-app/`](./web-app/) —— 同一渲染引擎的本地网页版:粘贴链接、点选参数、一键出图(没开服务时自动降级为「复制指令发给 Claude」)。
+
 ## 📜 许可证
 MIT — 详见 [LICENSE](./LICENSE)。
 

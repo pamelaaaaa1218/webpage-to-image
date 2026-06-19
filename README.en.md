@@ -55,6 +55,9 @@ node render.js \
 - `render.js` — render script (puppeteer-core)
 - `package.json` — dependency manifest
 
+## 🌐 Web app
+Prefer a UI? See [`web-app/`](./web-app/) — a local web version using the same render engine: paste a URL, pick options, one-click export (falls back to "copy command for Claude" when no server is running).
+
 ## 📜 License
 MIT — see [LICENSE](./LICENSE).
 
