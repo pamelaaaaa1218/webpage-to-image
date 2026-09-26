@@ -62,7 +62,8 @@ node render.js \
 
 微信搜索公众号 **「Pamela的AI笔记」** 或扫描下方二维码，获取项目更新、最新AI应用案例和实用教程。
 
-![Uploading 扫码_搜索联合传播样式-标准色版.png…]()
+<img width="2092" height="624" alt="扫码_搜索联合传播样式-标准色版" src="https://github.com/user-attachments/assets/98caa61d-fcaf-4a82-84d1-d789386b1cd5" />
+
 
 ## 📜 许可证
 MIT — 详见 [LICENSE](./LICENSE)。
