@@ -62,7 +62,7 @@ node render.js \
 
 微信搜索公众号 **「Pamela的AI笔记」** 或扫描下方二维码，获取项目更新、最新AI应用案例和实用教程。
 
-<img src="assets/pamela-ai-notes-wechat.png" alt="微信公众号「Pamela的AI笔记」二维码" width="800">
+![Uploading 扫码_搜索联合传播样式-标准色版.png…]()
 
 ## 📜 许可证
 MIT — 详见 [LICENSE](./LICENSE)。
