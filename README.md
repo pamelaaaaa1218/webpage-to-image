@@ -58,6 +58,12 @@ node render.js \
 ## 🌐 网页版
 偏好用网页操作?见 [`web-app/`](./web-app/) —— 同一渲染引擎的本地网页版:粘贴链接、点选参数、一键出图(没开服务时自动降级为「复制指令发给 Claude」)。
 
+## 项目更新与AI实践
+
+微信搜索公众号 **「Pamela的AI笔记」** 或扫描下方二维码，获取项目更新、最新AI应用案例和实用教程。
+
+<img src="assets/pamela-ai-notes-wechat.png" alt="微信公众号「Pamela的AI笔记」二维码" width="800">
+
 ## 📜 许可证
 MIT — 详见 [LICENSE](./LICENSE)。
 
